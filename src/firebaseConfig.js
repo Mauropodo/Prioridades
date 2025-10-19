@@ -1,7 +1,10 @@
-// firebaseConfig.js
+// src/firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup 
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmDP-8rv6uOdlCpT4fpwtpJQF3A3RPY90",
@@ -16,7 +19,19 @@ const firebaseConfig = {
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 
-// Servicios que vas a usar
+// Autenticación y proveedor de Google
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
-export const db = getFirestore(app);
+
+// 🔹 ESTA FUNCIÓN DEBE EXISTIR Y ESTAR EXPORTADA
+export async function loginWithGoogle() {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("✅ Usuario logueado:", user);
+    return user;
+  } catch (error) {
+    console.error("❌ Error en el login:", error);
+    throw error;
+  }
+}
