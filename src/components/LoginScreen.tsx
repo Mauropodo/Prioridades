@@ -1,11 +1,21 @@
 import { Lightbulb } from 'lucide-react';
 import { Button } from './ui/button';
+import { loginWithGoogle } from '../firebaseConfig';
 
 interface LoginScreenProps {
-  onLogin: () => void;
+  onLogin: (user: any) => void;
 }
 
 export function LoginScreen({ onLogin }: LoginScreenProps) {
+  const handleGoogleLogin = async () => {
+    try {
+      const user = await loginWithGoogle();
+      onLogin(user);
+    } catch (error) {
+      alert("Error al iniciar sesión. Intenta nuevamente.");
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white px-8">
       <div className="flex flex-col items-center space-y-6 max-w-md w-full">
@@ -25,9 +35,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         {/* Google Sign In Button */}
         <div className="w-full pt-8">
           <Button
-            onClick={onLogin}
+            onClick={handleGoogleLogin}
             className="w-full h-14 bg-sky-500 hover:bg-sky-600 text-white rounded-xl shadow-md transition-all duration-200"
-            bravo-auth-login-google="true"
           >
             <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24">
               <path
@@ -51,7 +60,6 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           </Button>
         </div>
 
-        {/* Footer text */}
         <p className="text-xs text-slate-400 text-center pt-4 px-4">
           Al continuar, aceptas nuestros términos de servicio y política de privacidad
         </p>
